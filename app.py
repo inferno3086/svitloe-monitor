@@ -29,7 +29,7 @@ def get_light_status():
     try:
         status_div = driver.find_element(By.XPATH, '/html/body/header/div/div')
         status_text = status_div.text.strip()
-        logging.info("Status Text: %s", status_text)
+        logging.info("Status Text Extracted: %s", status_text)
     except Exception as e:
         logging.error("Error while finding element: %s", e)
         status_text = "Error retrieving status"
