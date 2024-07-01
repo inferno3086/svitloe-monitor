@@ -10,12 +10,16 @@ import time
 
 app = Flask(__name__)
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 @app.route('/')
 def index():
     return "Welcome to Svitloe Monitor API. Use /widget to get the status."
 
 def get_light_status():
     status_text = ""
+    start_time = time.time()
     try:
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
@@ -55,6 +59,8 @@ def get_light_status():
     finally:
         driver.quit()
     
+    end_time = time.time()
+    logging.info(f"Execution time: {end_time - start_time} seconds")
     return status_text
 
 @app.route('/widget')
