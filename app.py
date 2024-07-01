@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import asyncio
+import logging
 
 app = Flask(__name__)
 
@@ -13,18 +13,23 @@ app = Flask(__name__)
 def index():
     return "Welcome to Svitloe Monitor API. Use /widget to get the status."
 
-async def get_light_status():
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    driver.get('https://svitloe.coderak.net/index.html')
-
+def get_light_status():
     try:
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=options)
+        driver.get('https://svitloe.coderak.net/index.html')
+
         wait = WebDriverWait(driver, 10)
-        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="status-text"]')))
+        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text
     except Exception as e:
-        status_text = "Error: {}".format(e)
+        logging.error("An error occurred: %s", e, exc_info=True)
+        status_text = f"Error: {str(e)}"
     finally:
         driver.quit()
     
@@ -32,7 +37,7 @@ async def get_light_status():
 
 @app.route('/widget')
 def widget():
-    status_text = asyncio.run(get_light_status())
+    status_text = get_light_status()
     return jsonify({"status_text": status_text})
 
 if __name__ == '__main__':
