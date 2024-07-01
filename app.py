@@ -28,9 +28,9 @@ def get_light_status():
     logging.info("URL loaded: %s", url)
     
     try:
-        # Ожидание загрузки динамического контента
-        wait = WebDriverWait(driver, 30)  # Увеличенное время ожидания
-        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="status-text"]')))
+        # Увеличенное время ожидания
+        wait = WebDriverWait(driver, 60)  # Увеличенное время ожидания до 60 секунд
+        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text.strip()
         logging.info("Extracted text using Selenium: %s", status_text)
     except Exception as e:
@@ -41,15 +41,11 @@ def get_light_status():
     
     return {
         "status_text": status_text
-    }
+}
 
 @app.route('/widget', methods=['GET'])
 def widget():
     return jsonify(get_light_status())
-
-@app.route('/', methods=['GET'])
-def home():
-    return "Welcome to the light status API. Go to /widget to see the status."
 
 if __name__ == "__main__":
     app.run(debug=True)
