@@ -30,8 +30,16 @@ def get_light_status():
     # Отладочные выводы
     print("Status Text:", status_text)  # Печать извлеченного текста для отладки
 
+    if "світло є" in status_text:
+        widget_color = "green"
+        widget_text = "Свет есть"
+    else:
+        widget_color = "red"
+        widget_text = "Света нет"
+    
     return {
-        "text": status_text
+        "color": widget_color,
+        "text": widget_text
     }
 
 @app.route('/widget', methods=['GET'])
