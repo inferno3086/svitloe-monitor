@@ -26,7 +26,7 @@ def get_light_status():
     driver.implicitly_wait(10)
     
     # Извлечение текста
-    status_div = driver.find_element(By.XPATH, '/html/body/header/div/div')
+    status_div = driver.find_element(By.XPATH, '/html/body/header/div/p[2]')
     status_text = status_div.text.strip()
     
     driver.quit()
