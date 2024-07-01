@@ -29,7 +29,7 @@ def get_light_status():
     
     try:
         # Явное ожидание элемента
-        wait = WebDriverWait(driver, 20)
+        wait = WebDriverWait(driver, 30)  # Увеличили время ожидания до 30 секунд
         status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text.strip()
         logging.info("Extracted text: %s", status_text)
