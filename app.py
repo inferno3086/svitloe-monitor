@@ -35,20 +35,12 @@ def get_light_status():
         logging.info("Extracted text using Selenium: %s", status_text)
     except Exception as e:
         logging.error("Error extracting text with Selenium: %s", e)
-        status_text = ""
-
+        status_text = "Error retrieving status"
+    
     driver.quit()
-
-    if "світло є" in status_text:
-        widget_color = "green"
-        widget_text = "Свет есть"
-    else:
-        widget_color = "red"
-        widget_text = "Света нет"
     
     return {
-        "color": widget_color,
-        "text": widget_text
+        "status_text": status_text
     }
 
 @app.route('/widget', methods=['GET'])
