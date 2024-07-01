@@ -20,17 +20,26 @@ def get_light_status():
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-cache")
         options.add_argument("--disable-application-cache")
-        options.add_argument("--disk-cache-size=0")
-        options.add_argument("--media-cache-size=0")
+        options.add_argument("--incognito")  # Use incognito mode to prevent caching
+        options.add_argument("--disable-cache")
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("start-maximized")
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+        options.add_argument("--disable-features=VizDisplayCompositor")
+        options.add_argument("window-size=1920x1080")
 
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
         driver.get('https://svitloe.coderak.net/index.html')
 
         # Wait for the page to load completely
-        time.sleep(5)  # Adjust the sleep time if needed
+        time.sleep(10)  # Adjust the sleep time if needed
 
         wait = WebDriverWait(driver, 20)
         status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
