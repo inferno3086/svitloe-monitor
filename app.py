@@ -3,12 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
-import logging
-import os
 
 app = Flask(__name__)
-
-logging.basicConfig(level=logging.INFO)
 
 def get_light_status():
     url = "https://svitloe.coderak.net/index.html"
@@ -25,14 +21,16 @@ def get_light_status():
     # Ожидание загрузки динамического контента
     driver.implicitly_wait(10)
     
-    # Извлечение текста
-    status_div = driver.find_element(By.XPATH, '/html/body/header/div/p[2]')
-    status_text = status_div.text.strip()
-    
-    driver.quit()
+    # Попытка извлечения текста с отладочными сообщениями
+    try:
+        status_div = driver.find_element(By.XPATH, '/html/body/header/div/div')
+        status_text = status_div.text.strip()
+        print(f"Extracted text: {status_text}")
+    except Exception as e:
+        print(f"Error extracting text: {e}")
+        status_text = ""
 
-    # Отладочные выводы
-    print("Status Text:", status_text)  # Печать извлеченного текста для отладки
+    driver.quit()
 
     if "світло є" in status_text:
         widget_color = "green"
