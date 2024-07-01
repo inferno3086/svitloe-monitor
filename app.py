@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import logging
+import time
 
 app = Flask(__name__)
 
@@ -24,8 +25,11 @@ def get_light_status():
         driver = webdriver.Chrome(service=service, options=options)
         driver.get('https://svitloe.coderak.net/index.html')
 
-        wait = WebDriverWait(driver, 10)
-        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="status"]')))
+        # Wait for the page to load completely
+        time.sleep(5)  # Adjust the sleep time if needed
+
+        wait = WebDriverWait(driver, 20)
+        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text
     except Exception as e:
         logging.error("An error occurred: %s", e, exc_info=True)
