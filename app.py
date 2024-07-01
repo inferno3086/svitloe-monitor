@@ -18,8 +18,8 @@ def get_light_status():
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    options.binary_location = os.getenv('GOOGLE_CHROME_BIN', 'google-chrome-stable')
-
+    options.binary_location = os.getenv('GOOGLE_CHROME_BIN', '/app/.apt/usr/bin/google-chrome')
+    
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
     logging.info("Navigating to URL: %s", url)
     driver.get(url)
@@ -33,9 +33,9 @@ def get_light_status():
     except Exception as e:
         logging.error("Error while finding element: %s", e)
         status_text = "Error retrieving status"
-
+    
     driver.quit()
-
+    
     if "світло є" in status_text:
         widget_color = "green"
         widget_text = "Свет есть"
