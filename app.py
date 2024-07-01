@@ -30,7 +30,7 @@ def get_light_status():
     try:
         # Ожидание загрузки динамического контента
         wait = WebDriverWait(driver, 30)  # Увеличенное время ожидания
-        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
+        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="status-text"]')))
         status_text = status_div.text.strip()
         logging.info("Extracted text using Selenium: %s", status_text)
     except Exception as e:
