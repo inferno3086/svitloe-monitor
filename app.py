@@ -13,37 +13,33 @@ logging.basicConfig(level=logging.INFO)
 def get_light_status():
     url = "https://svitloe.coderak.net/index.html"
     
-    logging.info("Starting Selenium WebDriver setup...")
+    # Настройка Selenium WebDriver
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    options.binary_location = os.getenv('GOOGLE_CHROME_BIN', '/app/.apt/usr/bin/google-chrome')
     
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-    logging.info("Navigating to URL: %s", url)
     driver.get(url)
     
+    # Ожидание загрузки динамического контента
     driver.implicitly_wait(10)
     
-    try:
-        status_div = driver.find_element(By.XPATH, '/html/body/header/div/div')
-        status_text = status_div.text.strip()
-        logging.info("Status Text Extracted: '%s'", status_text)
-    except Exception as e:
-        logging.error("Error while finding element: %s", e)
-        status_text = "Error retrieving status"
+    # Извлечение текста
+    status_div = driver.find_element(By.XPATH, '/html/body/header/div/div')
+    status_text = status_div.text.strip()
     
     driver.quit()
-    
-    if "світло є" in status_text.lower():
+
+    # Отладочные выводы
+    print("Status Text:", status_text)  # Печать извлеченного текста для отладки
+
+    if "світло є" in status_text:
         widget_color = "green"
         widget_text = "Свет есть"
     else:
         widget_color = "red"
         widget_text = "Света нет"
-    
-    logging.info("Widget Color: %s, Widget Text: %s", widget_color, widget_text)
     
     return {
         "color": widget_color,
