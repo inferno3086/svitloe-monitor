@@ -41,7 +41,11 @@ def get_light_status():
     
     return {
         "status_text": status_text
-}
+    }
+
+@app.route('/', methods=['GET'])
+def home():
+    return "Welcome to Svitloe Monitor API. Use /widget to get the status."
 
 @app.route('/widget', methods=['GET'])
 def widget():
