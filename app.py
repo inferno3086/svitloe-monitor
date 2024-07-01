@@ -23,11 +23,10 @@ def get_light_status():
         options.add_argument("--disable-application-cache")
         options.add_argument("--incognito")  # Use incognito mode to prevent caching
         options.add_argument("--disable-cache")
-        options.add_argument("disable-infobars")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-gpu")
         options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
+        options.add_argument("--disable-infobars")
         options.add_argument("--disable-browser-side-navigation")
         options.add_argument("--disable-web-security")
         options.add_argument("--allow-running-insecure-content")
@@ -38,12 +37,17 @@ def get_light_status():
         driver = webdriver.Chrome(service=service, options=options)
         driver.get('https://svitloe.coderak.net/index.html')
 
+        logging.info("Loading URL: https://svitloe.coderak.net/index.html")
+        
         # Wait for the page to load completely
         time.sleep(10)  # Adjust the sleep time if needed
 
-        wait = WebDriverWait(driver, 20)
+        logging.info("Page loaded, waiting for status element")
+
+        wait = WebDriverWait(driver, 30)  # Increase wait time
         status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text
+        logging.info(f"Extracted status text: {status_text}")
     except Exception as e:
         logging.error("An error occurred: %s", e, exc_info=True)
         status_text = f"Error: {str(e)}"
