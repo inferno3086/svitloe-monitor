@@ -34,7 +34,7 @@ def get_light_status():
     service = Service(ChromeDriverManager().install())
 
     driver = webdriver.Chrome(service=service, options=options)
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 20)
 
     try:
         logging.info("Loading URL")
