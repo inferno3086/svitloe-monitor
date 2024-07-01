@@ -29,19 +29,21 @@ def get_light_status():
     try:
         status_div = driver.find_element(By.XPATH, '/html/body/header/div/div')
         status_text = status_div.text.strip()
-        logging.info("Status Text Extracted: %s", status_text)
+        logging.info("Status Text Extracted: '%s'", status_text)
     except Exception as e:
         logging.error("Error while finding element: %s", e)
         status_text = "Error retrieving status"
     
     driver.quit()
     
-    if "світло є" in status_text:
+    if "світло є" in status_text.lower():
         widget_color = "green"
         widget_text = "Свет есть"
     else:
         widget_color = "red"
         widget_text = "Света нет"
+    
+    logging.info("Widget Color: %s, Widget Text: %s", widget_color, widget_text)
     
     return {
         "color": widget_color,
