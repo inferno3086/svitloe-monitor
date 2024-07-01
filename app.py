@@ -25,7 +25,7 @@ def get_light_status():
         driver.get('https://svitloe.coderak.net/index.html')
 
         wait = WebDriverWait(driver, 10)
-        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
+        status_div = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="status"]')))
         status_text = status_div.text
     except Exception as e:
         logging.error("An error occurred: %s", e, exc_info=True)
