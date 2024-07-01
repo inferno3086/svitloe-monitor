@@ -6,8 +6,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import logging
-import requests
-from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -30,8 +28,8 @@ def get_light_status():
     logging.info("URL loaded: %s", url)
     
     try:
-        # Явное ожидание элемента
-        wait = WebDriverWait(driver, 30)  # Увеличили время ожидания до 30 секунд
+        # Ожидание загрузки динамического контента
+        wait = WebDriverWait(driver, 30)  # Увеличенное время ожидания
         status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text.strip()
         logging.info("Extracted text using Selenium: %s", status_text)
@@ -40,18 +38,6 @@ def get_light_status():
         status_text = ""
 
     driver.quit()
-    
-    # Использование requests и BeautifulSoup
-    if not status_text:
-        try:
-            response = requests.get(url)
-            soup = BeautifulSoup(response.content, 'html.parser')
-            status_div = soup.find('div', class_='specific-class')  # Убедитесь, что это правильный селектор
-            status_text = status_div.get_text(strip=True) if status_div else ""
-            logging.info("Extracted text using BeautifulSoup: %s", status_text)
-        except Exception as e:
-            logging.error("Error extracting text with BeautifulSoup: %s", e)
-            status_text = ""
 
     if "світло є" in status_text:
         widget_color = "green"
