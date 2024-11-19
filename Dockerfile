@@ -1,51 +1,37 @@
-# Используем легкий образ Python
+# Базовый образ Python
 FROM python:3.9-slim
 
-# Обновляем пакеты и устанавливаем зависимости
+# Установить необходимые зависимости
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
-    libnss3 \
-    libgconf-2-4 \
-    libxi6 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxcursor1 \
-    libxdamage1 \
-    libxrandr2 \
-    libgbm-dev \
-    libgtk-3-0 \
-    libasound2 \
-    fonts-liberation \
-    libappindicator3-1 \
-    xdg-utils \
+    curl \
+    gnupg \
     && apt-get clean
 
-# Устанавливаем Google Chrome
+# Установить Google Chrome
 RUN wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && dpkg -i /tmp/google-chrome.deb || apt-get -fy install \
     && rm /tmp/google-chrome.deb
 
-# Установить подходящую версию ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}') && \
-    CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION) && \
-    wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
+# Проверить версию Chrome
+RUN google-chrome --version
+
+# Установить ChromeDriver, соответствующий версии Chrome
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1) && \
+    wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROME_VERSION.0.5735.90/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
     rm /tmp/chromedriver.zip
 
-
-# Устанавливаем рабочую директорию
+# Установить Python-зависимости
+COPY requirements.txt /app/requirements.txt
 WORKDIR /app
-
-# Копируем файлы проекта в контейнер
-COPY . /app
-
-# Устанавливаем зависимости Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Открываем порт 5000 для работы приложения
-EXPOSE 5000
+# Скопировать код приложения
+COPY . /app
 
-# Запускаем приложение через Gunicorn
+# Открыть порт и запустить приложение
+EXPOSE 5000
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
