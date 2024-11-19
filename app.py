@@ -4,7 +4,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 import logging
 import time
 
@@ -22,7 +21,7 @@ def get_light_status():
     start_time = time.time()
     try:
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
+        options.add_argument("--headless")  # Headless mode for running without GUI
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-application-cache")
@@ -38,17 +37,14 @@ def get_light_status():
         options.add_argument("--disable-features=VizDisplayCompositor")
         options.add_argument("window-size=1920x1080")
 
-        service = Service(ChromeDriverManager().install())
+        # Указываем путь к уже установленному ChromeDriver
+        service = Service("/usr/local/bin/chromedriver")
         driver = webdriver.Chrome(service=service, options=options)
         driver.get('https://svitloe.coderak.net/index.html')
 
         logging.info("Loading URL: https://svitloe.coderak.net/index.html")
         
         # Wait for the page to load completely
-        time.sleep(10)  # Adjust the sleep time if needed
-
-        logging.info("Page loaded, waiting for status element")
-
         wait = WebDriverWait(driver, 30)  # Increase wait time
         status_div = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/header/div/div')))
         status_text = status_div.text
@@ -69,4 +65,5 @@ def widget():
     return jsonify({"status_text": status_text})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

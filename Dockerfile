@@ -26,10 +26,12 @@ RUN wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-
     && dpkg -i /tmp/google-chrome.deb || apt-get -fy install \
     && rm /tmp/google-chrome.deb
 
-# Устанавливаем ChromeDriver
+# Установить ChromeDriver
 RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip \
     && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+    && chmod +x /usr/local/bin/chromedriver \
     && rm /tmp/chromedriver.zip
+
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
