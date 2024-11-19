@@ -15,16 +15,18 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
     echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
-# Установить Google Chrome (фиксированная версия)
-RUN apt-get update && apt-get install -y google-chrome-stable=114.0.5735.90-1
+# Установить последнюю версию Google Chrome
+RUN apt-get update && apt-get install -y google-chrome-stable
 
-# Установить ChromeDriver (соответствующая версия)
-RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip && \
+# Установить соответствующую версию ChromeDriver
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1) && \
+    CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION) && \
+    wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
     rm /tmp/chromedriver.zip
 
-# Проверить версии Chrome и ChromeDriver (для отладки)
+# Проверить версии (для отладки)
 RUN google-chrome --version && chromedriver --version
 
 # Установить Python-зависимости
