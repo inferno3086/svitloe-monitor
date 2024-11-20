@@ -7,25 +7,23 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     gnupg \
-    apt-transport-https \
-    ca-certificates \
     && apt-get clean
 
-# Добавить ключи и репозиторий Google Chrome
-RUN curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+# Установить Google Chrome
+RUN wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && dpkg -i /tmp/google-chrome.deb || apt-get -fy install \
+    && rm /tmp/google-chrome.deb
 
-# Установить фиксированную версию Google Chrome (например, 114)
-RUN apt-get update && apt-get install -y google-chrome-stable=113.0.5672.63-1
+# Проверить версию Chrome
+RUN google-chrome --version
 
-# Установить соответствующую версию ChromeDriver
-RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver.zip
+# Скопировать ваш ChromeDriver версии 131 в образ
+COPY "C:/Users/Garik/Desktop/Отчеты/Документы/API/svitloe-monitor/chromedriver" /usr/local/bin/chromedriver
 
-# Проверить версии (для отладки)
-RUN google-chrome --version && chromedriver --version
+
+
+# Сделать ChromeDriver исполняемым
+RUN chmod +x /usr/local/bin/chromedriver
 
 # Установить Python-зависимости
 COPY requirements.txt /app/requirements.txt
