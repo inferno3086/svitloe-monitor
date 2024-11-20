@@ -18,7 +18,7 @@ RUN wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-
 RUN google-chrome --version
 
 # Скопировать ваш ChromeDriver версии 131 в образ
-COPY "C:/Users/Garik/Desktop/Отчеты/Документы/API/svitloe-monitor/chromedriver" /usr/local/bin/chromedriver
+COPY ./chromedriver /usr/local/bin/chromedriver
 
 
 
