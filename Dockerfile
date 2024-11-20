@@ -19,9 +19,9 @@ RUN curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - 
 RUN apt-get update && apt-get install -y google-chrome-stable
 
 # Установить ChromeDriver, соответствующий версии Chrome
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+' | head -n 1) && \
-    echo "Detected Chrome version: $CHROME_VERSION" && \
-    CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
+RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+' | head -n 1 | cut -d '.' -f 1) && \
+    echo "Detected Chrome major version: $CHROME_VERSION" && \
+    CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION) && \
     echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION" && \
     wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
